@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Superior</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;600;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Playfair+Display:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css?v=19">
+  <script src="/static/theme.js"></script>
+  <script src="/static/auth.js"></script>
+</head>
+<body>
+
+<!-- ===== Auth Screen ===== -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Superior</div>
+    <div class="auth-tagline">画像URLコレクター</div>
+    <p class="auth-message">ご利用にはログインが必要です</p>
+    <div class="form-field">
+      <label class="field-label" for="auth-email">メールアドレス</label>
+      <input type="email" id="auth-email" placeholder="your@email.com" autocomplete="email">
+    </div>
+    <div class="form-field">
+      <label class="field-label" for="auth-password">パスワード</label>
+      <input type="password" id="auth-password" placeholder="パスワード" autocomplete="current-password">
+    </div>
+    <button id="auth-login-btn" class="btn btn--primary auth-btn">ログイン</button>
+    <div id="auth-error" class="auth-error" aria-live="polite"></div>
+  </div>
+</div>
+
+<div id="app-content">
+
+<!-- ===== Header ===== -->
+<header id="site-header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <span class="header-title">Superior</span>
+      <span class="header-sub">画像URLコレクター</span>
+    </div>
+    <div class="header-actions">
+      <button id="settings-btn" class="icon-btn" title="API設定">⚙️ API設定</button>
+      <button id="theme-toggle" class="icon-btn" title="テーマ切替">🌙</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== Main ===== -->
+<main class="container">
+
+  <!-- Search card -->
+  <section class="card" id="search-card">
+    <h2 class="card-title">画像URLを収集</h2>
+
+    <div class="form-grid">
+      <div class="form-field">
+        <label class="field-label" for="keyword">検索キーワード</label>
+        <input type="text" id="keyword" placeholder="例: WordPress Design" autocomplete="off">
+      </div>
+      <div class="form-field form-field--narrow">
+        <label class="field-label" for="limit">取得件数</label>
+        <input type="number" id="limit" value="10" min="1" max="100">
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label class="field-label">取得元</label>
+      <div class="radio-group" id="source-group">
+        {% for src in sources %}
+        <label class="radio-label">
+          <input type="radio" name="source" value="{{ src }}"{% if loop.first %} checked{% endif %}>
+          <span>{{ src }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button id="collect-btn" class="btn btn--primary">▶ 取得する</button>
+    </div>
+
+    <div id="status-msg" class="status-msg" aria-live="polite"></div>
+  </section>
+
+  <!-- Data section -->
+  <section class="data-section">
+    <div class="data-header">
+      <h2 class="section-title">収集データ</h2>
+      <span id="data-caption" class="data-caption"></span>
+    </div>
+
+    <div class="table-wrap">
+      <table id="data-table">
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox" id="check-all" title="全選択"></th>
+            <th>date</th>
+            <th>source</th>
+            <th>keyword</th>
+            <th>image_url</th>
+          </tr>
+        </thead>
+        <tbody id="data-tbody">
+          <tr class="empty-row"><td colspan="5">データを読み込み中...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-actions">
+      <button id="delete-btn" class="btn btn--danger" disabled>✕ 選択した行を削除</button>
+      <a id="download-btn" href="/api/download" class="btn btn--ghost" download>↓ Excelをダウンロード</a>
+      <button id="download-images-btn" class="btn">↓ 画像をダウンロード</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== Footer ===== -->
+<footer id="site-footer">
+  <div class="footer-inner">
+    <a href="/about" class="footer-about-link">ご利用について</a>
+    <div class="footer-author">Created by <strong>Akira Sasano</strong></div>
+  </div>
+</footer>
+
+<!-- ===== Settings Modal ===== -->
+<div id="settings-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="API設定">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">⚙️ API設定</h3>
+      <button id="settings-close" class="modal-close" aria-label="閉じる">✕</button>
+    </div>
+
+    <div class="settings-section">
+
+      <!-- Unsplash -->
+      <div class="settings-service-label">Unsplash</div>
+      <a href="https://unsplash.com/developers" target="_blank" rel="noopener" class="get-key-link">
+        Unsplashでキーを取得する ↗
+      </a>
+      <div class="settings-current-wrap" id="key-current-wrap">
+        <span class="settings-current-label">保存済みキー</span>
+        <code id="key-masked" class="key-masked"></code>
+      </div>
+      <label class="field-label" for="key-input">新しいAPIキー</label>
+      <input type="password" id="key-input" placeholder="Your Unsplash Access Key" autocomplete="off">
+      <div class="settings-actions">
+        <button id="key-save-btn" class="btn btn--primary btn--sm">保存</button>
+        <button id="key-clear-btn" class="btn btn--ghost btn--sm">クリア</button>
+      </div>
+
+      <hr class="settings-divider">
+
+      <!-- Pexels -->
+      <div class="settings-service-label">Pexels</div>
+      <a href="https://www.pexels.com/api/" target="_blank" rel="noopener" class="get-key-link">
+        Pexelsでキーを取得する ↗
+      </a>
+      <div class="settings-current-wrap" id="pexels-key-current-wrap">
+        <span class="settings-current-label">保存済みキー</span>
+        <code id="pexels-key-masked" class="key-masked"></code>
+      </div>
+      <label class="field-label" for="pexels-key-input">新しいAPIキー</label>
+      <input type="password" id="pexels-key-input" placeholder="Your Pexels API Key" autocomplete="off">
+      <div class="settings-actions">
+        <button id="pexels-key-save-btn" class="btn btn--primary btn--sm">保存</button>
+        <button id="pexels-key-clear-btn" class="btn btn--ghost btn--sm">クリア</button>
+      </div>
+
+      <div id="settings-msg" class="settings-msg" aria-live="polite"></div>
+    </div>
+  </div>
+</div>
+
+<script src="/static/script.js"></script>
+</div><!-- #app-content -->
+</body>
+</html>
