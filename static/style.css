@@ -1027,8 +1027,7 @@ html.light-mode .auth-card {
 
 /* サーバー休止に関する案内（フッター） */
 .footer-notice {
-  flex: 1;
-  text-align: center;
+  margin-left: 1.5rem;
   color: var(--text-muted);
   font-size: 0.82rem;
   font-weight: 500;
