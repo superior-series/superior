@@ -43,7 +43,7 @@
         });
         var data = await res.json();
 
-        if (data.success) {
+        if (data.status === 'ok') {
           localStorage.setItem(STORAGE_KEY, email);
           showApp();
         } else {

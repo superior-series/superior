@@ -6,16 +6,19 @@ from datetime import datetime
 from urllib.parse import quote
 
 import requests
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import (
-    NoSuchElementException,
-    StaleElementReferenceException,
-    TimeoutException,
-    WebDriverException,
-)
+try:
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.chrome.options import Options
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.common.exceptions import (
+        NoSuchElementException,
+        StaleElementReferenceException,
+        TimeoutException,
+        WebDriverException,
+    )
+except ImportError:
+    pass
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 from openpyxl.styles import Font
@@ -439,15 +442,43 @@ def scrape_pexels(keyword, limit, seen, api_key=""):
     return urls
 
 
+# ---------- Selenium 判定 ----------
+
+def _detect_selenium():
+    """Chrome/ChromeDriver が使えるか判定する（起動テスト）"""
+    try:
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        opts = Options()
+        opts.add_argument("--headless=new")
+        opts.add_argument("--no-sandbox")
+        opts.add_argument("--disable-dev-shm-usage")
+        driver = webdriver.Chrome(options=opts)
+        driver.quit()
+        return True
+    except Exception:
+        return False
+
+
 # ---------- メイン ----------
 
-SOURCES = {
-    "1": ("Bing", "bing-original", scrape_bing),
-    "2": ("Pinterest", "pinterest", scrape_pinterest),
-    "3": ("DuckDuckGo", "duckduckgo", scrape_ddg),
-    "4": ("Unsplash", "unsplash", scrape_unsplash),
-    "5": ("Pexels", "pexels", scrape_pexels),
-}
+_selenium_ok = _detect_selenium()
+if _selenium_ok:
+    print("Selenium検出: 5ソースモード")
+    SOURCES = {
+        "1": ("Bing", "bing-original", scrape_bing),
+        "2": ("Pinterest", "pinterest", scrape_pinterest),
+        "3": ("DuckDuckGo", "duckduckgo", scrape_ddg),
+        "4": ("Unsplash", "unsplash", scrape_unsplash),
+        "5": ("Pexels", "pexels", scrape_pexels),
+    }
+else:
+    print("Selenium未検出: 3ソースモード（API系のみ）")
+    SOURCES = {
+        "1": ("DuckDuckGo", "duckduckgo", scrape_ddg),
+        "2": ("Unsplash", "unsplash", scrape_unsplash),
+        "3": ("Pexels", "pexels", scrape_pexels),
+    }
 
 
 def main():
@@ -466,14 +497,14 @@ def main():
 
     # 取得元の選択
     print("取得元を選んでください:")
-    print("  1: Bing")
-    print("  2: Pinterest")
-    print("  3: DuckDuckGo")
+    for key, (name, _label, _func) in SOURCES.items():
+        print(f"  {key}: {name}")
+    valid = "/".join(SOURCES.keys())
     while True:
-        choice = input("番号を入力 (1/2/3): ").strip()
+        choice = input(f"番号を入力 ({valid}): ").strip()
         if choice in SOURCES:
             break
-        print("1, 2, 3 のいずれかを入力してください。")
+        print(f"{valid} のいずれかを入力してください。")
 
     name, label, scraper = SOURCES[choice]
 
