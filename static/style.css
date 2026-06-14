@@ -623,16 +623,6 @@ html.light-mode td.col-url a:hover { color: #3730a3; }
   color: var(--text-secondary);
 }
 
-.footer-author {
-  color: var(--text-faint);
-  font-size: 13px;
-  white-space: nowrap;
-  flex: 1;
-  text-align: right;
-}
-
-.footer-author strong { color: var(--text-muted); }
-
 /* ----- Settings Modal ----- */
 .modal-overlay {
   display: none;
@@ -1021,6 +1011,25 @@ html.light-mode .auth-card {
   .header-sub { display: none; }
   .table-actions { flex-direction: column; align-items: flex-start; }
   .footer-inner { gap: 0.5rem; }
-  .footer-author { text-align: left; }
   .author-card { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
+
+/* サーバー休止に関する案内（ログイン画面） */
+.auth-notice {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.6;
+  margin-top: 0.7rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+/* サーバー休止に関する案内（フッター） */
+.footer-notice {
+  flex: 1;
+  text-align: right;
+  color: var(--text-faint);
+  font-size: 0.74rem;
+  line-height: 1.5;
 }
