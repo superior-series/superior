@@ -60,7 +60,7 @@
     <div class="form-grid">
       <div class="form-field">
         <label class="field-label" for="keyword">検索キーワード</label>
-        <input type="text" id="keyword" placeholder="例: WordPress Design" autocomplete="off">
+        <input type="text" id="keyword" placeholder="例: cat" autocomplete="off">
       </div>
       <div class="form-field form-field--narrow">
         <label class="field-label" for="limit">取得件数</label>
@@ -140,9 +140,20 @@
 
       <!-- Unsplash -->
       <div class="settings-service-label">Unsplash</div>
-      <a href="https://unsplash.com/developers" target="_blank" rel="noopener" class="get-key-link">
+      <a href="https://unsplash.com/oauth/applications" target="_blank" rel="noopener" class="get-key-link">
         Unsplashでキーを取得する ↗
       </a>
+      <details class="api-key-guide">
+        <summary>キー取得の手順を見る</summary>
+        <ol>
+          <li>上のリンクから Unsplash の開発者ページへ</li>
+          <li>「New Application」をクリック</li>
+          <li>規約のチェックボックスをすべてチェック</li>
+          <li>アプリ名（例: <code>Superior</code>）と説明（例: <code>A personal tool to collect royalty-free image URLs.</code>）を入力</li>
+          <li>「Create application」を押すと <strong>Access Key</strong> が発行される</li>
+          <li>そのキーをコピーして、下の入力欄に貼り付け → 保存</li>
+        </ol>
+      </details>
       <div class="settings-current-wrap" id="key-current-wrap">
         <span class="settings-current-label">保存済みキー</span>
         <code id="key-masked" class="key-masked"></code>
@@ -158,9 +169,19 @@
 
       <!-- Pexels -->
       <div class="settings-service-label">Pexels</div>
-      <a href="https://www.pexels.com/api/" target="_blank" rel="noopener" class="get-key-link">
+      <a href="https://www.pexels.com/api/new/" target="_blank" rel="noopener" class="get-key-link">
         Pexelsでキーを取得する ↗
       </a>
+      <details class="api-key-guide">
+        <summary>キー取得の手順を見る</summary>
+        <ol>
+          <li>上のリンクから Pexels の API 申請ページへ</li>
+          <li>ログイン（未登録ならサインアップ）</li>
+          <li>アプリ名と用途を入力（例: <code>Superior</code> / <code>Personal image URL collector</code>）</li>
+          <li>送信すると <strong>API Key</strong> がすぐ表示される</li>
+          <li>そのキーをコピーして、下の入力欄に貼り付け → 保存</li>
+        </ol>
+      </details>
       <div class="settings-current-wrap" id="pexels-key-current-wrap">
         <span class="settings-current-label">保存済みキー</span>
         <code id="pexels-key-masked" class="key-masked"></code>

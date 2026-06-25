@@ -1033,3 +1033,50 @@ html.light-mode .auth-card {
   font-weight: 500;
   line-height: 1.5;
 }
+
+/* APIキー取得の手順ガイド（折りたたみ） */
+.api-key-guide {
+  margin: 0.5rem 0 0.9rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.api-key-guide summary {
+  cursor: pointer;
+  padding: 0.3rem 0;
+  user-select: none;
+  list-style: none;
+  color: var(--text-muted);
+  transition: color 0.15s;
+}
+
+.api-key-guide summary::before {
+  content: "▸ ";
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.api-key-guide[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.api-key-guide summary:hover {
+  color: var(--text-primary, #e0e0e8);
+}
+
+.api-key-guide ol {
+  margin: 0.5rem 0 0;
+  padding-left: 1.4rem;
+  line-height: 1.7;
+}
+
+.api-key-guide li {
+  margin-bottom: 0.2rem;
+}
+
+.api-key-guide code {
+  background: rgba(255,255,255,0.06);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+  font-size: 0.92em;
+}
